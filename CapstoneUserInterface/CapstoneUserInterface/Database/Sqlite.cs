@@ -9,95 +9,116 @@ namespace SQLiteDatabase
 {
     class Sqlite
     {
-        private readonly SQLiteConnection dbConnection;
+        private readonly string dbConnectionString;
+        private readonly string dbPath;
 
-        public Sqlite(string connectionString)
+        public Sqlite(string databasePath)
         {
-            dbConnection = new SQLiteConnection(connectionString);
+            dbConnectionString = "Data Source=" + databasePath;
+            dbPath = databasePath;
+        }
+
+        public void CreateDatabaseIfDoesNotExist()
+        {
+            if (System.IO.File.Exists(dbPath) == false)
+            {
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var dbConnection = new SQLiteConnection(dbConnectionString))
+                {
+                    dbConnection.Open();
+
+                    var createQuery = new SQLiteCommand
+                    {
+                        CommandText = "CREATE TABLE Images (ImageID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PatientID TEXT, FolderPath TEXT, DateUpdated TEXT)",
+                        Connection = dbConnection
+                    };
+
+                    createQuery.ExecuteNonQuery();
+                }
+            }
         }
 
         public List<Image> GetAllImages()
         {
-            try
+            using (var dbConnection = new SQLiteConnection(dbConnectionString))
             {
-                dbConnection.Open();
-                var imageList = new List<Image>();
-
-                var selectQuery = new SQLiteCommand
+                try
                 {
-                    CommandText = "SELECT * FROM Images;",
-                    Connection = dbConnection
-                };
+                    dbConnection.Open();
+                    var imageList = new List<Image>();
 
-                var reader = selectQuery.ExecuteReader();
-
-                // Create a list of Image objects from data returned from Database
-                while (reader.Read())
-                {
-                    imageList.Add(new Image
+                    var selectQuery = new SQLiteCommand
                     {
-                        ImageID = int.Parse(reader["ImageID"].ToString()),
-                        PatientID = reader["PatientID"].ToString(),
-                        FolderPath = reader["FolderPath"].ToString(),
-                        DateUpdated = reader["DateUpdated"].ToString()
-                    });
-                }
+                        CommandText = "SELECT * FROM Images;",
+                        Connection = dbConnection
+                    };
 
-                dbConnection.Close();
+                    var reader = selectQuery.ExecuteReader();
 
-                return imageList;
-            }
-            catch (SQLiteException ex)
-            {
-                if (dbConnection.State != ConnectionState.Closed)
-                {
-                    dbConnection.Close();
-                }
-
-                Console.WriteLine(ex);
-
-                return new List<Image>()
-                {
-                    new Image
+                    // Create a list of Image objects from data returned from Database
+                    while (reader.Read())
                     {
-                        ImageID = 0,
-                        PatientID = "N/A",
-                        FolderPath = "Error loading Image entries from database",
-                        DateUpdated = "N/A"
+                        imageList.Add(new Image
+                        {
+                            ImageID = int.Parse(reader["ImageID"].ToString()),
+                            PatientID = reader["PatientID"].ToString(),
+                            FolderPath = reader["FolderPath"].ToString(),
+                            DateUpdated = reader["DateUpdated"].ToString()
+                        });
                     }
-                };
+
+                    return imageList;
+                }
+                catch (SQLiteException ex)
+                {
+                    Console.WriteLine(ex);
+
+                    return new List<Image>()
+                    {
+                        new Image
+                        {
+                            ImageID = 0,
+                            PatientID = "N/A",
+                            FolderPath = "Error loading Image entries from database",
+                            DateUpdated = "N/A"
+                        }
+                    };
+                }
             }
         }
 
         public void InsertImage(Image image)
         {
-            try
+            using (var dbConnection = new SQLiteConnection(dbConnectionString))
             {
-                dbConnection.Open();
-                var insertStatement = new SQLiteCommand("INSERT INTO Images (PatientID, FolderPath, DateUpdated) VALUES (@PatientID, @FolderPath, @DateUpdated);", dbConnection);
-                insertStatement.Parameters.AddWithValue("PatientID", image.PatientID);
-                insertStatement.Parameters.AddWithValue("FolderPath", image.FolderPath);
-
-                if (image.DateUpdated != null)
+                try
                 {
-                    insertStatement.Parameters.AddWithValue("DateUpdated", image.DateUpdated);
-                }
-                else
-                {
-                    insertStatement.Parameters.AddWithValue("DateUpdated", DateTime.Now.ToShortDateString());
-                }
+                    dbConnection.Open();
+                    var insertStatement = new SQLiteCommand
+                    {
+                        CommandText = "INSERT INTO Images (PatientID, FolderPath, DateUpdated) VALUES (@PatientID, @FolderPath, @DateUpdated);",
+                        Connection = dbConnection
+                    };
 
-                insertStatement.ExecuteNonQuery();
-                dbConnection.Close();
-            }
-            catch (SQLiteException ex)
-            {
-                if (dbConnection.State != ConnectionState.Closed)
-                {
-                    dbConnection.Close();
-                }
+                    insertStatement.Parameters.AddWithValue("PatientID", image.PatientID);
+                    insertStatement.Parameters.AddWithValue("FolderPath", image.FolderPath);
 
-                Console.WriteLine(ex);
+                    if (image.DateUpdated != null)
+                    {
+                        insertStatement.Parameters.AddWithValue("DateUpdated", image.DateUpdated);
+                    }
+                    else
+                    {
+                        insertStatement.Parameters.AddWithValue("DateUpdated", DateTime.Now.ToShortDateString());
+                    }
+
+                    insertStatement.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
         }
     }
