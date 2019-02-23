@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Management.Automation;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using SQLiteDatabase;
@@ -20,6 +22,8 @@ namespace CapstoneUserInterface
         {
             InitializeComponent();
             LoadListViewAvailableFolders();
+            SetRemoteSignedExecutionPolicy();
+            OpenButton.IsEnabled = false;
         }
 
         private void LoadListViewAvailableFolders()
@@ -30,8 +34,22 @@ namespace CapstoneUserInterface
             ListViewAvailableFolders.ItemsSource = itemList;
         }
 
+        // Set the execution policy to remote signed for this process asynchronously
+        public void SetRemoteSignedExecutionPolicy()
+        {
+            new Task(() =>
+            {
+                using (var ps = PowerShell.Create())
+                {
+                    ps.AddScript("Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned");
+                    var output = ps.Invoke();
+                }
+            }).Start();
+        }
+
         private void ListViewAvailableFolders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            OpenButton.IsEnabled = true;
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
