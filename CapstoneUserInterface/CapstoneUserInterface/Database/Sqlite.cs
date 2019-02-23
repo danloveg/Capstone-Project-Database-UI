@@ -26,15 +26,21 @@ namespace SQLiteDatabase
 
                 using (var dbConnection = new SQLiteConnection(dbConnectionString))
                 {
-                    dbConnection.Open();
-
-                    var createQuery = new SQLiteCommand
+                    try
                     {
-                        CommandText = "CREATE TABLE Images (ImageID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PatientID TEXT, FolderPath TEXT, DateUpdated TEXT)",
-                        Connection = dbConnection
-                    };
+                        dbConnection.Open();
 
-                    createQuery.ExecuteNonQuery();
+                        var createQuery = new SQLiteCommand
+                        {
+                            CommandText = "CREATE TABLE Images (ImageID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PatientID TEXT, FolderPath TEXT, DateUpdated TEXT);",
+                            Connection = dbConnection
+                        };
+
+                        createQuery.ExecuteNonQuery();
+                    } catch (SQLiteException ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
                 }
             }
         }
@@ -111,6 +117,30 @@ namespace SQLiteDatabase
                     {
                         insertStatement.Parameters.AddWithValue("DateUpdated", DateTime.Now.ToShortDateString());
                     }
+
+                    insertStatement.ExecuteNonQuery();
+                }
+                catch (SQLiteException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+        }
+
+        public void DeleteImage(int patientId)
+        {
+            using (var dbConnection = new SQLiteConnection(dbConnectionString))
+            {
+                try
+                {
+                    dbConnection.Open();
+                    var insertStatement = new SQLiteCommand
+                    {
+                        CommandText = "DELETE FROM Images WHERE PatientId=@Pid;",
+                        Connection = dbConnection
+                    };
+
+                    insertStatement.Parameters.AddWithValue("Pid", patientId);
 
                     insertStatement.ExecuteNonQuery();
                 }
