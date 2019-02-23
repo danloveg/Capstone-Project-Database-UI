@@ -15,14 +15,23 @@ using System.Windows.Shapes;
 
 namespace CapstoneUserInterface
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void ListViewAvailableFolders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
