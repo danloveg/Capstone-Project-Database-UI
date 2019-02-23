@@ -4,11 +4,11 @@ param(
 
 $SlicerParams = "--python-code `"import DICOMLib.DICOMUtils as utils; utils.importDicom(`"$FolderPath`")`""
 
-If (Get-Command "Slice" -ErrorAction SilentlyContinue) {
+If (Get-Command "Slicer" -ErrorAction SilentlyContinue) {
     Slicer $SlicerParams
     "OK"
 }
-ElseIf (Get-Command "Slice.exe" -ErrorAction SilentlyContinue) {
+ElseIf (Get-Command "Slicer.exe" -ErrorAction SilentlyContinue) {
     Slicer.exe $SlicerParams
     "OK"
 }
