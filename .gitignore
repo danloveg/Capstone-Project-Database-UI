@@ -6,6 +6,9 @@
 *.user
 *.sln.docstates
 
+# Project specific
+CapstoneUserInterface/Database/ENG4600_Capstone.db
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
