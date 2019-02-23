@@ -97,11 +97,10 @@ namespace SQLiteDatabase
                     dbConnection.Open();
                     var insertStatement = new SQLiteCommand
                     {
-                        CommandText = "INSERT INTO Images (PatientID, FolderPath, DateUpdated) VALUES (@PatientID, @FolderPath, @DateUpdated);",
+                        CommandText = "INSERT INTO Images (FolderPath, DateUpdated) VALUES (@FolderPath, @DateUpdated);",
                         Connection = dbConnection
                     };
 
-                    insertStatement.Parameters.AddWithValue("PatientID", image.PatientID);
                     insertStatement.Parameters.AddWithValue("FolderPath", image.FolderPath);
 
                     if (image.DateUpdated != null)
