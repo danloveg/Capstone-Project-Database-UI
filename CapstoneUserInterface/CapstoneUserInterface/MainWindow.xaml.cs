@@ -36,7 +36,7 @@ namespace CapstoneUserInterface
         }
 
         // Set the execution policy to remote signed for this process asynchronously
-        public void SetRemoteSignedExecutionPolicy()
+        private void SetRemoteSignedExecutionPolicy()
         {
             new Task(() =>
             {
@@ -86,6 +86,28 @@ namespace CapstoneUserInterface
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
+            var item = (SQLiteDatabase.Image) ListViewAvailableFolders.SelectedItem;
+
+            using (var ps = PowerShell.Create())
+            {
+                ps.AddCommand(scriptPath);
+                ps.AddParameter("FolderPath", item.FolderPath);
+                var results = ps.Invoke();
+                var errors = ps.Streams.Error.ReadAll();
+
+                if (errors.Count == 0)
+                {
+                    foreach (var result in results)
+                    {
+                        var message = (string) result.BaseObject;
+
+                        if (string.Equals(message, "OK") == false)
+                        {
+                            MessageBox.Show(this, message, "Error Opening 3DSlicer");
+                        }
+                    }
+                }
+            }
         }
     }
 }
