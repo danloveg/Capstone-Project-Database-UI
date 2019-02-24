@@ -2,14 +2,14 @@ param(
     [Parameter(Mandatory=$True)][String] $FolderPath
 )
 
-$SlicerParams = "--python-code `"import DICOMLib.DICOMUtils as utils; utils.importDicom(`"$FolderPath`")`""
+$PythonCode = "import DICOMLib.DICOMUtils as utils; utils.importDicom('{0}')" -f $FolderPath
 
 If (Get-Command "Slicer" -ErrorAction SilentlyContinue) {
-    Slicer $SlicerParams
+    Slicer --python-code  $PythonCode
     "OK"
 }
 ElseIf (Get-Command "Slicer.exe" -ErrorAction SilentlyContinue) {
-    Slicer.exe $SlicerParams
+    Slicer.exe --python-code $PythonCode
     "OK"
 }
 Else {

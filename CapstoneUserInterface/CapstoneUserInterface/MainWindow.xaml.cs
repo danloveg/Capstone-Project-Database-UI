@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Management.Automation;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace CapstoneUserInterface
         private readonly string databasePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"ENG4600_Capstone.db");
         private readonly string scriptPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Scripts\openSlicer.ps1");
 
-        private List<SQLiteDatabase.Image> itemList;
+        private ObservableCollection<SQLiteDatabase.Image> itemList = new ObservableCollection<SQLiteDatabase.Image>();
         private Sqlite sqliteHelper;
 
 
@@ -31,7 +32,8 @@ namespace CapstoneUserInterface
         {
             sqliteHelper = new Sqlite(databasePath);
             sqliteHelper.CreateDatabaseIfDoesNotExist();
-            itemList = sqliteHelper.GetAllImages();
+            var allImages = sqliteHelper.GetAllImages();
+            allImages.ForEach(x => itemList.Add(x));
             ListViewAvailableFolders.ItemsSource = itemList;
         }
 
@@ -63,18 +65,30 @@ namespace CapstoneUserInterface
             };
 
             // Show it and get the chosen folder
-            string selectedFolder;
             if ((bool)dialog.ShowDialog(this))
             {
-                selectedFolder = dialog.SelectedPath;
-                MessageBox.Show(this, "The selected folder was: " + dialog.SelectedPath, "Sample folder browser dialog");
+                var selectedFolder = dialog.SelectedPath;
 
-                // Add Image to database.
-                //sqliteHelper.AddImage(<Some Image>)
+                if (FolderInDatabaseAlready(selectedFolder))
+                {
+                    MessageBox.Show(this, "The selected folder already exists in the database.");
+                    return;
+                }
+
+                sqliteHelper.InsertImage(new SQLiteDatabase.Image
+                {
+                    FolderPath = selectedFolder
+                });
 
                 // Reload list view
-
-                // If ListView has no selected item now, disable the open button
+                var allImages = sqliteHelper.GetAllImages();
+                foreach (var image in allImages)
+                {
+                    if (string.Equals(image.FolderPath, selectedFolder))
+                    {
+                        itemList.Add(image);
+                    }
+                }
             }
             // If user did not choose a folder, do nothing
             else
@@ -108,6 +122,19 @@ namespace CapstoneUserInterface
                     }
                 }
             }
+        }
+
+        private bool FolderInDatabaseAlready(string selectedFolder)
+        {
+            foreach (var image in itemList)
+            {
+                if (string.Equals(selectedFolder, image.FolderPath))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
