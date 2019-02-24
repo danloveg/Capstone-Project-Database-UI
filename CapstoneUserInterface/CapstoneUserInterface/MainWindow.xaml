@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="ECE4600 DICOM Database Interface" Height="450" Width="800">
+        Title="ECE4600 DICOM Database Interface" Height="450" Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -12,15 +12,15 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="ImportButton" Grid.ColumnSpan="2" Content="Import Image Folder" Margin="40,0,0,350" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left" Width="185" Click="ImportButton_Click"/>
         <Button x:Name="OpenButton" Grid.ColumnSpan="2" Content="Open Selected" HorizontalAlignment="Left" Margin="40,0,0,306" Width="185" RenderTransformOrigin="0.566,-1.716" Grid.IsSharedSizeScope="True" Height="30" VerticalAlignment="Bottom" Click="OpenButton_Click"/>
-        <ListView x:Name="ListViewAvailableFolders" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="340" Margin="230,53,0,0" VerticalAlignment="Top" Width="540" SelectionChanged="ListViewAvailableFolders_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible">
+        <ListView x:Name="ListViewAvailableFolders" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="340" Margin="230,53,0,0" VerticalAlignment="Top" Width="740" SelectionChanged="ListViewAvailableFolders_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding itemList}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Patient ID" Width="120" DisplayMemberBinding="{Binding Path=PatientID}" />
-                    <GridViewColumn Header="Folder Path" Width="240" DisplayMemberBinding="{Binding Path=FolderPath}" />
+                    <GridViewColumn Header="Folder Path" Width="440" DisplayMemberBinding="{Binding Path=FolderPath}" />
                     <GridViewColumn Header="Date Updated" Width="180" DisplayMemberBinding="{Binding Path=DateUpdated}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="AvailableFoldersTextBox" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="19" Margin="230,34,0,0" TextWrapping="Wrap" Text="Available Folders to Load in 3D Slicer" VerticalAlignment="Top" Width="540" Background="#FF747474" Foreground="White"/>
+        <TextBox x:Name="AvailableFoldersTextBox" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="19" Margin="230,34,0,0" TextWrapping="Wrap" Text="Available Folders to Load in 3D Slicer" VerticalAlignment="Top" Width="740" Background="#FF747474" Foreground="White"/>
     </Grid>
 </Window>
