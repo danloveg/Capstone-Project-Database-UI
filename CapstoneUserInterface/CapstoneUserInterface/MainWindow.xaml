@@ -15,7 +15,7 @@
         <ListView x:Name="ListViewAvailableFolders" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="340" Margin="230,53,0,0" VerticalAlignment="Top" Width="740" SelectionChanged="ListViewAvailableFolders_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{Binding itemList}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Patient ID" Width="120" DisplayMemberBinding="{Binding Path=PatientID}" />
+                    <GridViewColumn Header="Entry ID" Width="120" DisplayMemberBinding="{Binding Path=ImageID}" />
                     <GridViewColumn Header="Folder Path" Width="440" DisplayMemberBinding="{Binding Path=FolderPath}" />
                     <GridViewColumn Header="Date Updated" Width="180" DisplayMemberBinding="{Binding Path=DateUpdated}" />
                 </GridView>
