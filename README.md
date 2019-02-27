@@ -1,4 +1,4 @@
-# Capstone Project - Computer Engineering
+# Capstone Project User Interface
 
 ## Summary
 This code is a part of Group 17's Capstone project for the Fall 2018/Winter 2019 terms.
