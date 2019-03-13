@@ -7,6 +7,8 @@ This repository contains a user interface meant to allow a user to store folders
 
 The code is written using the C# WPF platform, and is meant to be run on Windows Vista and later. The database running behind the scenes of the code is SQLite, interactions with it are done with the [System.Data.SQLite](https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki) library. Note that this code is meant to be used in tandem with 3DSlicer so it must be installed and added to Window's PATH.
 
+![Screenshot](Screenshots/OpenedInterface.PNG)
+
 ## Running the Code
 
 ### Using Pre-Compiled Executable
