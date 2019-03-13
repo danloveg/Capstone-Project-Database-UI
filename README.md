@@ -18,4 +18,6 @@ Download the zip file called `CapstoneInterface.zip` from the release tab, and r
 Open the solution file `CapstoneUserInterface/CapstoneUserInterface.sln` in Visual Studio. Then, build the project using the Release or Debug configuration. The compiled executable will either be in the `bin/Debug` or `bin/Release` folder depending on the build configuration used.
 
 ## Using the Code
-There are two main operations allowed: adding a folder to the database, and opening a folder from the database up in 3DSlicer as a collection of DICOM data. Refer to the [flowchart](UI_flowchart.png) to find more information about how the code works.
+There are two main operations allowed: adding a folder to the database, and opening a folder from the database up in 3DSlicer as a collection of DICOM data. Refer to the flowchart below to find more information about how the code works.
+
+![Flowchart](Flowcharts/UI_flowchart.png)
